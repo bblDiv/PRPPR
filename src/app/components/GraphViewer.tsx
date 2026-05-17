@@ -13,16 +13,22 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  InputAdornment,
+  Paper,
   Slider,
   Switch,
+  TextField,
   Tooltip,
   Typography,
+  alpha,
   useTheme,
 } from "@mui/material";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import SearchIcon from "@mui/icons-material/Search";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
 import Fuse from "fuse.js";
 import {
   CSS2DRenderer,
@@ -129,6 +135,9 @@ const GraphViewer: React.FC<GraphViewerProps> = ({
   const [showLabels, setShowLabels] = useState(false);
   const [showLinkLabels, setShowLinkLabels] = useState(false);
   const [showHighlight, setShowHighlight] = useState(true);
+  const [floatingSearchTerm, setFloatingSearchTerm] = useState("");
+  const [floatingSearchResults, setFloatingSearchResults] = useState<CustomNode[]>([]);
+  const [floatingSearchOpen, setFloatingSearchOpen] = useState(false);
   const graphRef = useRef<any>();
   const extraRenderers = [new CSS2DRenderer() as any as Renderer];
   const nodeCount = data.nodes.length;
@@ -148,6 +157,19 @@ const GraphViewer: React.FC<GraphViewerProps> = ({
     setGraphData(data);
     initialGraphData.current = data;
   }, [data]);
+
+  useEffect(() => {
+    if (!graphRef.current) return;
+    const fg = graphRef.current;
+    if (fg.d3Force) {
+      fg.d3Force("charge")?.strength(-120);
+      fg.d3Force("link")?.distance(50);
+      if (data.nodes.length > 200) {
+        fg.d3Force("charge")?.strength(-60);
+        fg.d3Force("link")?.distance(30);
+      }
+    }
+  }, [graphData, data.nodes.length]);
 
   useEffect(() => {
     checkServerStatus();
@@ -327,6 +349,25 @@ const GraphViewer: React.FC<GraphViewerProps> = ({
     );
     setSearchResults([...nodeResults, ...linkResults]);
     setRightDrawerOpen(true);
+  };
+
+  const handleFloatingSearch = (term: string) => {
+    setFloatingSearchTerm(term);
+    if (term.length < 2) {
+      setFloatingSearchResults([]);
+      return;
+    }
+    const results = fuse.search(term).map((r) => r.item);
+    setFloatingSearchResults(
+      results.filter((item): item is CustomNode => "neighbors" in item).slice(0, 8)
+    );
+  };
+
+  const handleFloatingResultClick = (node: CustomNode) => {
+    setFloatingSearchOpen(false);
+    setFloatingSearchTerm("");
+    setFloatingSearchResults([]);
+    handleFocusButtonClick(node);
   };
 
   const toggleDrawer = (open: boolean) => () => {
@@ -568,6 +609,117 @@ const GraphViewer: React.FC<GraphViewerProps> = ({
         backgroundColor: getBackgroundColor(),
       }}
     >
+      {/* Floating Search Bar */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 16,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 1500,
+          width: { xs: "90%", sm: 400 },
+        }}
+      >
+        <Paper
+          elevation={8}
+          sx={{
+            bgcolor: alpha("#1a1a1e", 0.95),
+            backdropFilter: "blur(12px)",
+            borderRadius: "12px",
+            border: `1px solid ${alpha("#ffffff", 0.1)}`,
+            overflow: "hidden",
+          }}
+        >
+          <TextField
+            fullWidth
+            placeholder="Search nodes..."
+            value={floatingSearchTerm}
+            onChange={(e) => handleFloatingSearch(e.target.value)}
+            onFocus={() => setFloatingSearchOpen(true)}
+            variant="standard"
+            InputProps={{
+              disableUnderline: true,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: "#71717a", ml: 1.5 }} />
+                </InputAdornment>
+              ),
+              endAdornment: floatingSearchTerm ? (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      setFloatingSearchTerm("");
+                      setFloatingSearchResults([]);
+                    }}
+                    sx={{ color: "#71717a", mr: 0.5 }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+              sx: {
+                color: "#fafafa",
+                py: 1.2,
+                px: 0.5,
+                fontSize: "0.9rem",
+              },
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && floatingSearchResults.length > 0) {
+                handleFloatingResultClick(floatingSearchResults[0]);
+              }
+              if (e.key === "Escape") {
+                setFloatingSearchOpen(false);
+                setFloatingSearchTerm("");
+                setFloatingSearchResults([]);
+              }
+            }}
+          />
+          {floatingSearchOpen && floatingSearchResults.length > 0 && (
+            <Box
+              sx={{
+                borderTop: `1px solid ${alpha("#ffffff", 0.08)}`,
+                maxHeight: 240,
+                overflowY: "auto",
+              }}
+            >
+              {floatingSearchResults.map((node, i) => (
+                <Box
+                  key={node.uuid || i}
+                  onClick={() => handleFloatingResultClick(node)}
+                  sx={{
+                    px: 2,
+                    py: 1.2,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    borderBottom: `1px solid ${alpha("#ffffff", 0.04)}`,
+                    "&:hover": { bgcolor: alpha("#ffffff", 0.06) },
+                    transition: "background-color 0.15s",
+                  }}
+                >
+                  <MyLocationIcon sx={{ color: "#71717a", fontSize: 16 }} />
+                  <Box>
+                    <Typography
+                      sx={{ color: "#fafafa", fontSize: "0.85rem", fontWeight: 600 }}
+                    >
+                      {node.name || node.id}
+                    </Typography>
+                    <Typography
+                      sx={{ color: "#52525b", fontSize: "0.7rem", textTransform: "uppercase" }}
+                    >
+                      {node.type}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Paper>
+      </Box>
+
       <Box
         sx={{
           position: "absolute",

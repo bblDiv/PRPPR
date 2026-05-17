@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { Box, Typography, Button, IconButton, alpha } from "@mui/material";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -9,19 +9,244 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 const MotionBox = motion(Box);
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0 },
 };
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const KnowledgeGraphIcon = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <circle cx="12" cy="12" r="4" stroke="#a1a1aa" strokeWidth="1.5" />
+    <circle cx="28" cy="12" r="4" stroke="#a1a1aa" strokeWidth="1.5" />
+    <circle cx="20" cy="30" r="4" stroke="#a1a1aa" strokeWidth="1.5" />
+    <line x1="15.5" y1="14" x2="24.5" y2="14" stroke="#a1a1aa" strokeWidth="1.5" />
+    <line x1="14" y1="15.5" x2="18" y2="26.5" stroke="#a1a1aa" strokeWidth="1.5" />
+    <line x1="26" y1="15.5" x2="22" y2="26.5" stroke="#a1a1aa" strokeWidth="1.5" />
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <circle cx="18" cy="18" r="8" stroke="#a1a1aa" strokeWidth="1.5" />
+    <line x1="24" y1="24" x2="32" y2="32" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M16 14l2 2 4-4" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const SyncIcon = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <path d="M28 14a8 8 0 01-1 11.3" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M12 26a8 8 0 011-11.3" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" />
+    <polyline points="28,10 28,14 24,14" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <polyline points="12,30 12,26 16,26" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <path d="M20 6l12 5v9c0 7-5 11-12 14C13 31 8 27 8 20v-9l12-5z" stroke="#a1a1aa" strokeWidth="1.5" strokeLinejoin="round" />
+    <rect x="17" y="17" width="6" height="7" rx="1" stroke="#a1a1aa" strokeWidth="1.5" />
+    <circle cx="20" cy="14" r="3" stroke="#a1a1aa" strokeWidth="1.5" />
+  </svg>
+);
+
+interface ConstellationNode {
+  x: number;
+  y: number;
+  r: number;
+  color: string;
+  duration: number;
+  delay: number;
+}
+
+const HeroConstellation: React.FC = () => {
+  const nodes = useMemo<ConstellationNode[]>(() => {
+    const seed = [
+      { x: 80, y: 60, r: 4 },
+      { x: 150, y: 30, r: 3 },
+      { x: 220, y: 80, r: 5 },
+      { x: 300, y: 45, r: 3 },
+      { x: 370, y: 70, r: 4 },
+      { x: 440, y: 35, r: 3 },
+      { x: 120, y: 130, r: 3 },
+      { x: 190, y: 160, r: 5 },
+      { x: 260, y: 120, r: 6 },
+      { x: 340, y: 150, r: 4 },
+      { x: 410, y: 110, r: 3 },
+      { x: 60, y: 200, r: 3 },
+      { x: 140, y: 230, r: 4 },
+      { x: 230, y: 210, r: 3 },
+      { x: 310, y: 240, r: 5 },
+      { x: 400, y: 200, r: 4 },
+      { x: 460, y: 170, r: 3 },
+      { x: 100, y: 280, r: 3 },
+      { x: 200, y: 270, r: 4 },
+      { x: 280, y: 180, r: 3 },
+      { x: 350, y: 260, r: 3 },
+      { x: 430, y: 250, r: 4 },
+      { x: 170, y: 100, r: 2 },
+      { x: 380, y: 90, r: 2 },
+      { x: 250, y: 50, r: 2 },
+      { x: 330, y: 200, r: 2 },
+      { x: 480, y: 140, r: 2 },
+    ];
+    const colors = ["#f59e0b", "#fbbf24", "#ffffff", "#d97706", "#f59e0b", "#fbbf24", "#ffffff"];
+    return seed.map((s, i) => ({
+      ...s,
+      color: colors[i % colors.length],
+      duration: 4 + (i % 5) * 1.2,
+      delay: (i % 7) * 0.4,
+    }));
+  }, []);
+
+  const lines = useMemo(() => {
+    const result: { x1: number; y1: number; x2: number; y2: number }[] = [];
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130) {
+          result.push({ x1: nodes[i].x, y1: nodes[i].y, x2: nodes[j].x, y2: nodes[j].y });
+        }
+      }
+    }
+    return result;
+  }, [nodes]);
+
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        width: "100%",
+        maxWidth: 540,
+        mx: "auto",
+        mt: 6,
+        mb: 2,
+      }}
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "120%",
+          height: "120%",
+          background: "radial-gradient(ellipse at center, rgba(245,158,11,0.07) 0%, transparent 70%)",
+          pointerEvents: "none",
+        }}
+      />
+      <svg viewBox="0 0 540 310" style={{ width: "100%", height: "auto", display: "block" }}>
+        {lines.map((l, i) => (
+          <line
+            key={`l-${i}`}
+            x1={l.x1}
+            y1={l.y1}
+            x2={l.x2}
+            y2={l.y2}
+            stroke="rgba(251,191,36,0.12)"
+            strokeWidth="1"
+          />
+        ))}
+        {nodes.map((n, i) => (
+          <motion.circle
+            key={`n-${i}`}
+            cx={n.x}
+            r={n.r}
+            fill={n.color}
+            opacity={n.r > 3 ? 0.9 : 0.5}
+            animate={{
+              cy: [n.y, n.y + 4, n.y - 3, n.y],
+            }}
+            transition={{
+              duration: n.duration,
+              delay: n.delay,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </svg>
+    </Box>
+  );
+};
+
+const features = [
+  {
+    icon: <KnowledgeGraphIcon />,
+    title: "Knowledge Graph",
+    desc: "Transform scattered conversations, tickets, and docs into a unified graph of relationships your team can navigate visually.",
+  },
+  {
+    icon: <SearchIcon />,
+    title: "AI-Powered Search",
+    desc: "Ask natural language questions. The AI traverses your knowledge graph and surfaces answers with full source context.",
+  },
+  {
+    icon: <SyncIcon />,
+    title: "Real-time Sync",
+    desc: "Changes in Slack, Jira, or Notion appear in your graph within seconds. Always current, never stale.",
+  },
+  {
+    icon: <ShieldIcon />,
+    title: "Privacy First",
+    desc: "All processing happens locally in your browser. Zero data leaves your machine. Enterprise-grade security by architecture.",
+  },
+];
+
+const steps = [
+  {
+    num: "1",
+    title: "Ingest",
+    desc: "Connect Slack, Jira, and Notion. Vinculum pulls conversations, tickets, and pages automatically.",
+  },
+  {
+    num: "2",
+    title: "Extract",
+    desc: "AI identifies entities, relationships, and decisions. GraphRAG builds a structured knowledge graph.",
+  },
+  {
+    num: "3",
+    title: "Explore",
+    desc: "Navigate a 3D visualization. Ask questions. Get answers with traced provenance.",
+  },
+];
+
+const stats = [
+  { value: "100K+", label: "Nodes supported" },
+  { value: "3", label: "Integrations" },
+  { value: "< 2s", label: "Query time" },
+  { value: "0", label: "Data uploaded" },
+];
+
+const integrationLogos = [
+  { name: "Slack", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/slack.svg" },
+  { name: "Jira", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/jira.svg" },
+  { name: "Notion", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" },
+  { name: "Confluence", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/confluence.svg" },
+  { name: "GitHub", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" },
+  { name: "Microsoft Teams", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/microsoftteams.svg" },
+  { name: "Google Drive", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googledrive.svg" },
+  { name: "Linear", url: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linear.svg" },
+];
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const featuresRef = useRef<HTMLDivElement>(null);
-  const enterpriseRef = useRef<HTMLDivElement>(null);
-  const pricingRef = useRef<HTMLDivElement>(null);
 
   const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const navItems = [
+    { label: "Features", action: () => scrollTo(featuresRef) },
+    { label: "Enterprise", action: () => navigate("/enterprise") },
+  ];
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#09090b", color: "#fafafa" }}>
@@ -79,14 +304,10 @@ const LandingPage: React.FC = () => {
               alignItems: "center",
             }}
           >
-            {[
-              { label: "Features", ref: featuresRef },
-              { label: "Enterprise", ref: enterpriseRef },
-              { label: "Pricing", ref: pricingRef },
-            ].map((item) => (
+            {navItems.map((item) => (
               <Typography
                 key={item.label}
-                onClick={() => scrollTo(item.ref)}
+                onClick={item.action}
                 sx={{
                   fontSize: "0.875rem",
                   color: "#a1a1aa",
@@ -131,11 +352,11 @@ const LandingPage: React.FC = () => {
       {/* Hero */}
       <Box
         sx={{
-          maxWidth: 1200,
+          maxWidth: 1100,
           mx: "auto",
           px: { xs: 2, md: 4 },
-          pt: { xs: 12, md: 20 },
-          pb: { xs: 12, md: 16 },
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 6, md: 10 },
           textAlign: "center",
         }}
       >
@@ -162,7 +383,7 @@ const LandingPage: React.FC = () => {
               component="span"
               sx={{
                 textDecoration: "underline",
-                textDecorationColor: alpha("#ffffff", 0.3),
+                textDecorationColor: alpha("#60a5fa", 0.6),
                 textUnderlineOffset: "6px",
                 textDecorationThickness: "3px",
               }}
@@ -176,7 +397,7 @@ const LandingPage: React.FC = () => {
               color: "#a1a1aa",
               maxWidth: 560,
               mx: "auto",
-              mb: 5,
+              mb: 4,
               lineHeight: 1.7,
             }}
           >
@@ -228,10 +449,96 @@ const LandingPage: React.FC = () => {
               Learn More
             </Button>
           </Box>
+
         </MotionBox>
       </Box>
 
-      {/* === FEATURES: The Problem === */}
+      {/* Integration Marquee */}
+      <Box
+        sx={{
+          borderTop: "1px solid",
+          borderBottom: "1px solid",
+          borderColor: alpha("#ffffff", 0.06),
+          py: 4,
+          overflow: "hidden",
+          position: "relative",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 80,
+            background: "linear-gradient(to right, #09090b, transparent)",
+            zIndex: 2,
+          },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 80,
+            background: "linear-gradient(to left, #09090b, transparent)",
+            zIndex: 2,
+          },
+        }}
+      >
+        <Typography
+          sx={{
+            textAlign: "center",
+            fontSize: "0.7rem",
+            fontWeight: 600,
+            color: "#52525b",
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            mb: 2,
+          }}
+        >
+          Connects with your stack
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 6,
+            animation: "marquee 25s linear infinite",
+            width: "max-content",
+            "@keyframes marquee": {
+              "0%": { transform: "translateX(0)" },
+              "100%": { transform: "translateX(-50%)" },
+            },
+          }}
+        >
+          {[...integrationLogos, ...integrationLogos].map((logo, i) => (
+            <Box
+              key={i}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                flexShrink: 0,
+              }}
+            >
+              <Box
+                component="img"
+                src={logo.url}
+                alt={logo.name}
+                sx={{
+                  width: 24,
+                  height: 24,
+                  opacity: 0.5,
+                  filter: "invert(1)",
+                }}
+              />
+              <Typography sx={{ color: "#71717a", fontSize: "0.85rem", fontWeight: 500, whiteSpace: "nowrap" }}>
+                {logo.name}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
+      {/* Features */}
       <Box
         ref={featuresRef}
         sx={{
@@ -241,445 +548,31 @@ const LandingPage: React.FC = () => {
       >
         <Box
           sx={{
-            maxWidth: 800,
+            maxWidth: 1100,
             mx: "auto",
             px: { xs: 2, md: 4 },
-            py: { xs: 10, md: 16 },
+            py: { xs: 8, md: 12 },
           }}
         >
           <MotionBox
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-80px" }}
             variants={fadeUp}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <Typography
               sx={{
                 fontSize: "0.75rem",
                 fontWeight: 700,
-                color: "#71717a",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                mb: 2,
-              }}
-            >
-              The Problem
-            </Typography>
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: { xs: "1.75rem", md: "2.5rem" },
-                fontWeight: 800,
-                lineHeight: 1.15,
-                mb: 3,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Information chaos is costing your team{" "}
-              <Box
-                component="span"
-                sx={{
-                  textDecoration: "underline",
-                  textDecorationColor: alpha("#ffffff", 0.25),
-                  textUnderlineOffset: "4px",
-                  textDecorationThickness: "2px",
-                }}
-              >
-                hours every week
-              </Box>
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "1rem", md: "1.125rem" },
-                color: "#a1a1aa",
-                lineHeight: 1.8,
-                mb: 4,
-              }}
-            >
-              Right now, company information is scattered across completely
-              different apps. Conversations happen on Slack. Tasks are tracked on
-              Jira. Notes are saved in Notion.
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "1rem", md: "1.125rem" },
-                color: "#a1a1aa",
-                lineHeight: 1.8,
-              }}
-            >
-              If a new employee wants to know why a piece of code was changed,
-              they have to search all three apps separately. It's frustrating,
-              error-prone, and wastes hours that should be spent building.
-            </Typography>
-          </MotionBox>
-        </Box>
-      </Box>
-
-      {/* === The Solution === */}
-      <Box
-        sx={{
-          borderTop: "1px solid",
-          borderColor: alpha("#ffffff", 0.06),
-          bgcolor: alpha("#ffffff", 0.015),
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: 800,
-            mx: "auto",
-            px: { xs: 2, md: 4 },
-            py: { xs: 10, md: 16 },
-          }}
-        >
-          <MotionBox
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <Typography
-              sx={{
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                color: "#71717a",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                mb: 2,
-              }}
-            >
-              The Solution
-            </Typography>
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: { xs: "1.75rem", md: "2.5rem" },
-                fontWeight: 800,
-                lineHeight: 1.15,
-                mb: 3,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              One living map of everything your company{" "}
-              <Box
-                component="span"
-                sx={{
-                  textDecoration: "underline",
-                  textDecorationColor: alpha("#ffffff", 0.25),
-                  textUnderlineOffset: "4px",
-                  textDecorationThickness: "2px",
-                }}
-              >
-                knows and does
-              </Box>
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              {[
-                "If a team talks about a software bug on Slack, Vinculum remembers it.",
-                "If that bug becomes an official ticket on Jira, the app draws a digital line between the chat and the ticket.",
-                "If an engineer fixes it and writes a guide in Notion, the app connects that engineer to the guide.",
-              ].map((text, i) => (
-                <Box
-                  key={i}
-                  sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}
-                >
-                  <Box
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: "50%",
-                      border: "2px solid",
-                      borderColor: alpha("#ffffff", 0.2),
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      mt: 0.3,
-                    }}
-                  >
-                    <Typography
-                      sx={{ fontSize: "0.7rem", fontWeight: 700, color: "#a1a1aa" }}
-                    >
-                      {i + 1}
-                    </Typography>
-                  </Box>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: "1rem", md: "1.125rem" },
-                      color: "#a1a1aa",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {text}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </MotionBox>
-        </Box>
-      </Box>
-
-      {/* === The 3D Star Map === */}
-      <Box
-        sx={{
-          borderTop: "1px solid",
-          borderColor: alpha("#ffffff", 0.06),
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: 800,
-            mx: "auto",
-            px: { xs: 2, md: 4 },
-            py: { xs: 10, md: 16 },
-          }}
-        >
-          <MotionBox
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <Typography
-              sx={{
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                color: "#71717a",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                mb: 2,
-              }}
-            >
-              The Experience
-            </Typography>
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: { xs: "1.75rem", md: "2.5rem" },
-                fontWeight: 800,
-                lineHeight: 1.15,
-                mb: 4,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              A 3D star map of your company's{" "}
-              <Box
-                component="span"
-                sx={{
-                  textDecoration: "underline",
-                  textDecorationColor: alpha("#ffffff", 0.25),
-                  textUnderlineOffset: "4px",
-                  textDecorationThickness: "2px",
-                }}
-              >
-                entire brain
-              </Box>
-            </Typography>
-
-            {[
-              {
-                label: "The Stars",
-                text: "Every person, document, and conversation is a glowing node. Color-coded by type — green for people, blue for documents, red for issues — so you can read the map at a glance.",
-              },
-              {
-                label: "The Connections",
-                text: "Lines connect related nodes. If an engineer wrote a document, a line connects them. Related items naturally cluster together into visual galaxies.",
-              },
-              {
-                label: "The AI Flight",
-                text: 'Type a question like "Why is the payment system down?" and the AI finds the answer. The camera flies through 3D space, zooming into the exact cluster of nodes holding the solution.',
-              },
-            ].map((item, i) => (
-              <Box
-                key={i}
-                sx={{
-                  mb: i < 2 ? 4 : 0,
-                  pl: 3,
-                  borderLeft: "2px solid",
-                  borderColor: alpha("#ffffff", 0.1),
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: "0.9rem",
-                    fontWeight: 700,
-                    color: "#fafafa",
-                    mb: 0.5,
-                  }}
-                >
-                  {item.label}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: { xs: "0.95rem", md: "1.05rem" },
-                    color: "#a1a1aa",
-                    lineHeight: 1.7,
-                  }}
-                >
-                  {item.text}
-                </Typography>
-              </Box>
-            ))}
-
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => navigate("/demo")}
-              endIcon={<ArrowForwardIcon />}
-              sx={{
-                mt: 5,
-                bgcolor: "#fafafa",
-                color: "#09090b",
-                px: 4,
-                py: 1.5,
-                fontSize: "1rem",
-                fontWeight: 600,
-                "&:hover": { bgcolor: "#e4e4e7" },
-              }}
-            >
-              See It in Action
-            </Button>
-          </MotionBox>
-        </Box>
-      </Box>
-
-      {/* === ENTERPRISE === */}
-      <Box
-        ref={enterpriseRef}
-        sx={{
-          borderTop: "1px solid",
-          borderColor: alpha("#ffffff", 0.06),
-          bgcolor: alpha("#ffffff", 0.015),
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: 800,
-            mx: "auto",
-            px: { xs: 2, md: 4 },
-            py: { xs: 10, md: 16 },
-          }}
-        >
-          <MotionBox
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <Typography
-              sx={{
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                color: "#71717a",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                mb: 2,
-              }}
-            >
-              Enterprise
-            </Typography>
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: { xs: "1.75rem", md: "2.5rem" },
-                fontWeight: 800,
-                lineHeight: 1.15,
-                mb: 4,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Built for teams that can't afford{" "}
-              <Box
-                component="span"
-                sx={{
-                  textDecoration: "underline",
-                  textDecorationColor: alpha("#ffffff", 0.25),
-                  textUnderlineOffset: "4px",
-                  textDecorationThickness: "2px",
-                }}
-              >
-                information gaps
-              </Box>
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              {[
-                {
-                  title: "Privacy first",
-                  desc: "All data is processed locally in your browser. Nothing leaves your machine. Enterprise-grade security by design.",
-                },
-                {
-                  title: "Scales with you",
-                  desc: "From 100 to 100,000 nodes. The graph engine handles massive datasets without breaking a sweat.",
-                },
-                {
-                  title: "Integrates everywhere",
-                  desc: "Slack, Jira, Notion, Confluence, GitHub — connect the tools your team already uses. No workflow changes required.",
-                },
-                {
-                  title: "AI-powered extraction",
-                  desc: "Automatically identifies people, projects, decisions, and their hidden connections across all your tools using GraphRAG.",
-                },
-              ].map((item, i) => (
-                <Box key={i}>
-                  <Typography
-                    sx={{ fontSize: "1rem", fontWeight: 700, color: "#fafafa", mb: 0.5 }}
-                  >
-                    {item.title}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: "0.95rem", md: "1.05rem" },
-                      color: "#a1a1aa",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {item.desc}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </MotionBox>
-        </Box>
-      </Box>
-
-      {/* === PRICING === */}
-      <Box
-        ref={pricingRef}
-        sx={{
-          borderTop: "1px solid",
-          borderColor: alpha("#ffffff", 0.06),
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: 900,
-            mx: "auto",
-            px: { xs: 2, md: 4 },
-            py: { xs: 10, md: 16 },
-          }}
-        >
-          <MotionBox
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <Typography
-              sx={{
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                color: "#71717a",
+                color: "#60a5fa",
                 textTransform: "uppercase",
                 letterSpacing: "0.15em",
                 mb: 2,
                 textAlign: "center",
               }}
             >
-              Pricing
+              Features
             </Typography>
             <Typography
               variant="h3"
@@ -692,129 +585,384 @@ const LandingPage: React.FC = () => {
                 textAlign: "center",
               }}
             >
-              Simple, transparent pricing
+              Everything you need to{" "}
+              <Box
+                component="span"
+                sx={{
+                  textDecoration: "underline",
+                  textDecorationColor: alpha("#60a5fa", 0.45),
+                  textUnderlineOffset: "4px",
+                  textDecorationThickness: "2px",
+                }}
+              >
+                connect the dots
+              </Box>
             </Typography>
+          </MotionBox>
 
-            <Box
+          <MotionBox
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={stagger}
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+              gap: 3,
+            }}
+          >
+            {features.map((f, i) => (
+              <MotionBox
+                key={f.title}
+                variants={fadeUp}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                sx={{
+                  p: 4,
+                  borderRadius: "16px",
+                  border: "1px solid",
+                  borderColor: alpha("#ffffff", 0.06),
+                  bgcolor: alpha("#ffffff", 0.02),
+                  transition: "border-color 0.2s, background-color 0.2s, box-shadow 0.2s",
+                  "&:hover": {
+                    borderColor: alpha("#60a5fa", 0.2),
+                    bgcolor: alpha("#60a5fa", 0.03),
+                    boxShadow: `0 0 20px ${alpha("#60a5fa", 0.04)}`,
+                  },
+                }}
+              >
+                <Box sx={{ mb: 2 }}>{f.icon}</Box>
+                <Typography
+                  sx={{ fontSize: "1rem", fontWeight: 700, color: "#fafafa", mb: 1 }}
+                >
+                  {f.title}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: "0.9rem", color: "#a1a1aa", lineHeight: 1.7 }}
+                >
+                  {f.desc}
+                </Typography>
+              </MotionBox>
+            ))}
+          </MotionBox>
+        </Box>
+      </Box>
+
+      {/* How It Works */}
+      <Box
+        sx={{
+          borderTop: "1px solid",
+          borderColor: alpha("#ffffff", 0.06),
+          bgcolor: alpha("#ffffff", 0.015),
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 1100,
+            mx: "auto",
+            px: { xs: 2, md: 4 },
+            py: { xs: 8, md: 12 },
+          }}
+        >
+          <MotionBox
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeUp}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <Typography
               sx={{
-                display: "grid",
-                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" },
-                gap: 2,
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                color: "#60a5fa",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                mb: 2,
+                textAlign: "center",
               }}
             >
-              {[
-                {
-                  name: "Starter",
-                  price: "Free",
-                  desc: "For individuals exploring their data",
-                  features: [
-                    "Up to 1,000 nodes",
-                    "Local processing",
-                    "Parquet file import",
-                    "3D visualization",
-                  ],
-                },
-                {
-                  name: "Team",
-                  price: "$29/mo",
-                  desc: "For teams connecting their workflows",
-                  features: [
-                    "Up to 50,000 nodes",
-                    "Slack + Jira integration",
-                    "AI-powered search",
-                    "Shared workspaces",
-                    "Priority support",
-                  ],
-                },
-                {
-                  name: "Enterprise",
-                  price: "Custom",
-                  desc: "For organizations at scale",
-                  features: [
-                    "Unlimited nodes",
-                    "All integrations",
-                    "SSO & SAML",
-                    "Dedicated support",
-                    "On-premise option",
-                    "Custom SLA",
-                  ],
-                },
-              ].map((tier, i) => (
-                <Box
-                  key={i}
+              How It Works
+            </Typography>
+            <Typography
+              variant="h3"
+              sx={{
+                fontSize: { xs: "1.75rem", md: "2.5rem" },
+                fontWeight: 800,
+                lineHeight: 1.15,
+                mb: 8,
+                letterSpacing: "-0.02em",
+                textAlign: "center",
+              }}
+            >
+              Three steps to{" "}
+              <Box
+                component="span"
+                sx={{
+                  textDecoration: "underline",
+                  textDecorationColor: alpha("#60a5fa", 0.45),
+                  textUnderlineOffset: "4px",
+                  textDecorationThickness: "2px",
+                }}
+              >
+                total clarity
+              </Box>
+            </Typography>
+          </MotionBox>
+
+          <MotionBox
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={stagger}
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              alignItems: { xs: "flex-start", md: "flex-start" },
+              justifyContent: "center",
+              gap: { xs: 4, md: 0 },
+              position: "relative",
+            }}
+          >
+            {steps.map((step, i) => (
+              <React.Fragment key={step.num}>
+                <MotionBox
+                  variants={fadeUp}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   sx={{
-                    p: 4,
-                    borderRadius: "12px",
-                    border: "1px solid",
-                    borderColor:
-                      i === 1 ? alpha("#ffffff", 0.15) : alpha("#ffffff", 0.06),
-                    bgcolor:
-                      i === 1 ? alpha("#ffffff", 0.03) : "transparent",
+                    flex: 1,
+                    textAlign: "center",
+                    px: { xs: 0, md: 3 },
+                    position: "relative",
                   }}
                 >
-                  <Typography
-                    sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#a1a1aa", mb: 1 }}
-                  >
-                    {tier.name}
-                  </Typography>
-                  <Typography
+                  <Box
                     sx={{
-                      fontSize: "2rem",
-                      fontWeight: 800,
-                      color: "#fafafa",
-                      mb: 0.5,
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      border: "1.5px solid",
+                      borderColor: alpha("#60a5fa", 0.3),
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mx: "auto",
+                      mb: 2,
                     }}
                   >
-                    {tier.price}
-                  </Typography>
-                  <Typography
-                    sx={{ fontSize: "0.85rem", color: "#71717a", mb: 3 }}
-                  >
-                    {tier.desc}
-                  </Typography>
-                  {tier.features.map((f, j) => (
                     <Typography
-                      key={j}
-                      sx={{
-                        fontSize: "0.85rem",
-                        color: "#a1a1aa",
-                        py: 0.5,
-                        borderTop: j === 0 ? "1px solid" : "none",
-                        borderColor: alpha("#ffffff", 0.06),
-                        "&::before": { content: '"→ "', color: "#52525b" },
-                      }}
+                      sx={{ fontSize: "1rem", fontWeight: 700, color: "#60a5fa" }}
                     >
-                      {f}
+                      {step.num}
                     </Typography>
-                  ))}
-                  <Button
-                    variant={i === 1 ? "contained" : "outlined"}
-                    fullWidth
-                    onClick={() => navigate("/demo")}
+                  </Box>
+                  <Typography
+                    sx={{ fontSize: "1.1rem", fontWeight: 700, color: "#fafafa", mb: 1 }}
+                  >
+                    {step.title}
+                  </Typography>
+                  <Typography
                     sx={{
-                      mt: 3,
-                      ...(i === 1
-                        ? {
-                            bgcolor: "#fafafa",
-                            color: "#09090b",
-                            "&:hover": { bgcolor: "#e4e4e7" },
-                          }
-                        : {
-                            borderColor: alpha("#ffffff", 0.15),
-                            color: "#fafafa",
-                            "&:hover": {
-                              borderColor: alpha("#ffffff", 0.3),
-                              bgcolor: alpha("#ffffff", 0.04),
-                            },
-                          }),
+                      fontSize: "0.9rem",
+                      color: "#a1a1aa",
+                      lineHeight: 1.6,
+                      maxWidth: 280,
+                      mx: "auto",
                     }}
                   >
-                    {i === 2 ? "Contact Sales" : "Get Started"}
-                  </Button>
-                </Box>
-              ))}
-            </Box>
+                    {step.desc}
+                  </Typography>
+                </MotionBox>
+                {i < steps.length - 1 && (
+                  <Box
+                    sx={{
+                      display: { xs: "none", md: "flex" },
+                      alignItems: "center",
+                      pt: 3,
+                    }}
+                  >
+                    <svg width="60" height="2" viewBox="0 0 60 2">
+                      <line
+                        x1="0"
+                        y1="1"
+                        x2="60"
+                        y2="1"
+                        stroke="rgba(255,255,255,0.1)"
+                        strokeWidth="1.5"
+                        strokeDasharray="6 4"
+                      />
+                    </svg>
+                  </Box>
+                )}
+              </React.Fragment>
+            ))}
           </MotionBox>
+
+          <Box sx={{ textAlign: "center", mt: 6 }}>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => navigate("/demo")}
+              endIcon={<ArrowForwardIcon />}
+              sx={{
+                bgcolor: "#fafafa",
+                color: "#09090b",
+                px: 4,
+                py: 1.5,
+                fontSize: "1rem",
+                fontWeight: 600,
+                "&:hover": { bgcolor: "#e4e4e7" },
+              }}
+            >
+              See It in Action
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Stats Strip */}
+      <Box
+        sx={{
+          borderTop: "1px solid",
+          borderBottom: "1px solid",
+          borderColor: alpha("#ffffff", 0.06),
+          bgcolor: alpha("#ffffff", 0.015),
+          py: { xs: 6, md: 8 },
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 1100,
+            mx: "auto",
+            px: { xs: 2, md: 4 },
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          {stats.map((stat, i) => (
+            <Box
+              key={stat.label}
+              sx={{
+                flex: { xs: "1 1 50%", md: "1 1 0" },
+                textAlign: "center",
+                py: { xs: 3, md: 0 },
+                borderRight:
+                  i < stats.length - 1
+                    ? { xs: "none", md: `1px solid ${alpha("#ffffff", 0.08)}` }
+                    : "none",
+                borderBottom:
+                  i < 2
+                    ? { xs: `1px solid ${alpha("#ffffff", 0.06)}`, md: "none" }
+                    : "none",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: { xs: "2rem", md: "2.5rem" },
+                  fontWeight: 800,
+                  color: "#fafafa",
+                  lineHeight: 1,
+                  mb: 1,
+                }}
+              >
+                {stat.value}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                  color: "#71717a",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                {stat.label}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
+      {/* CTA */}
+      <Box
+        sx={{
+          borderTop: "1px solid",
+          borderColor: alpha("#ffffff", 0.06),
+          py: { xs: 10, md: 14 },
+          textAlign: "center",
+        }}
+      >
+        <MotionBox
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={fadeUp}
+          transition={{ duration: 0.5 }}
+          sx={{ maxWidth: 600, mx: "auto", px: 2 }}
+        >
+          <Typography
+            variant="h3"
+            sx={{
+              fontSize: { xs: "1.75rem", md: "2.5rem" },
+              fontWeight: 800,
+              lineHeight: 1.15,
+              mb: 2,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Ready to connect your knowledge?
+          </Typography>
+          <Typography sx={{ color: "#a1a1aa", mb: 4, fontSize: "1.05rem" }}>
+            See how Vinculum transforms scattered data into actionable insight.
+          </Typography>
+          <Button
+            onClick={() => navigate("/demo")}
+            endIcon={<ArrowForwardIcon />}
+            sx={{
+              bgcolor: "#fafafa",
+              color: "#09090b",
+              px: 5,
+              py: 1.5,
+              fontSize: "1rem",
+              fontWeight: 600,
+              "&:hover": { bgcolor: "#e4e4e7" },
+            }}
+          >
+            Start Free Trial
+          </Button>
+        </MotionBox>
+      </Box>
+
+      {/* Footer */}
+      <Box
+        sx={{
+          borderTop: "1px solid",
+          borderColor: alpha("#ffffff", 0.06),
+          py: 4,
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 1100,
+            mx: "auto",
+            px: { xs: 2, md: 4 },
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography sx={{ fontSize: "0.8rem", color: "#52525b" }}>
+            Vinculum
+          </Typography>
+          <IconButton
+            href="https://github.com/bblDiv/PRPPR"
+            target="_blank"
+            rel="noopener"
+            sx={{ color: "#52525b", "&:hover": { color: "#a1a1aa" } }}
+            size="small"
+          >
+            <GitHubIcon sx={{ fontSize: 16 }} />
+          </IconButton>
         </Box>
       </Box>
     </Box>

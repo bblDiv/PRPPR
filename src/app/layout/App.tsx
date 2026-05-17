@@ -8,6 +8,7 @@ import {
 import { HashRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "../components/LandingPage";
 import DemoPage from "../components/DemoPage";
+import EnterprisePage from "../components/EnterprisePage";
 
 const theme = createTheme({
   palette: {
@@ -82,6 +83,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/demo" element={<DemoPage />} />
+          <Route path="/enterprise" element={<EnterprisePage />} />
         </Routes>
       </HashRouter>
     </ThemeProvider>

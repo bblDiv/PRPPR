@@ -29,10 +29,24 @@ const baseMapping: { [key: string]: string } = {
 };
 
 const fileSchemas: { [key: string]: string } = {};
-Object.entries(baseMapping).forEach(([key, value]) => {  
-  fileSchemas[key] = value;  
+Object.entries(baseMapping).forEach(([key, value]) => {
+  fileSchemas[key] = value;
   fileSchemas[`create_final_${key}`] = value;
 });
+
+const inferSchema = (fileName: string): string | undefined => {
+  const lower = fileName.toLowerCase();
+  if (fileSchemas[fileName]) return fileSchemas[fileName];
+  if (fileSchemas[`create_final_${fileName}`]) return fileSchemas[`create_final_${fileName}`];
+  if (lower.includes("entit")) return "entity";
+  if (lower.includes("relationship") || lower.includes("rel")) return "relationship";
+  if (lower.includes("community_report")) return "community_report";
+  if (lower.includes("communit")) return "community";
+  if (lower.includes("document") || lower.includes("doc")) return "document";
+  if (lower.includes("text_unit") || lower.includes("chunk")) return "text_unit";
+  if (lower.includes("covariate")) return "covariate";
+  return undefined;
+};
 
 const useFileHandler = () => {
   const [entities, setEntities] = useState<Entity[]>([]);
@@ -61,7 +75,7 @@ const useFileHandler = () => {
     for (const file of files) {
       const fileName =
         typeof file === "string" ? file.split("/").pop()! : file.name;      
-      const schema = fileSchemas[fileName] || fileSchemas[`create_final_${fileName}`];
+      const schema = inferSchema(fileName);
 
       let data;
       if (typeof file === "string") {
@@ -103,13 +117,13 @@ const useFileHandler = () => {
       }
     }
 
-    setEntities(entitiesArray.flat());
-    setRelationships(relationshipsArray.flat());
-    setDocuments(documentsArray.flat());
-    setTextUnits(textUnitsArray.flat());
-    setCommunities(communitiesArray.flat());
-    setCommunityReports(communityReportsArray.flat());
-    setCovariates(covariatesArray.flat());
+    if (entitiesArray.length > 0) setEntities(entitiesArray.flat());
+    if (relationshipsArray.length > 0) setRelationships(relationshipsArray.flat());
+    if (documentsArray.length > 0) setDocuments(documentsArray.flat());
+    if (textUnitsArray.length > 0) setTextUnits(textUnitsArray.flat());
+    if (communitiesArray.length > 0) setCommunities(communitiesArray.flat());
+    if (communityReportsArray.length > 0) setCommunityReports(communityReportsArray.flat());
+    if (covariatesArray.length > 0) setCovariates(covariatesArray.flat());
   };
 
   const checkFileExists = async (filePath: string) => {

@@ -58,20 +58,29 @@ const useGraphData = (
     }));
 
     const nodesMap: { [key: string]: CustomNode } = {};
-    nodes.forEach(node => nodesMap[node.id] = node);
+    nodes.forEach(node => {
+      nodesMap[node.id] = node;
+      nodesMap[node.id.toUpperCase()] = node;
+    });
 
     const links: CustomLink[] = relationships
-      .map((relationship) => ({
-        source: relationship.source,
-        target: relationship.target,
-        type: relationship.type,
-        weight: relationship.weight,
-        description: relationship.description,
-        text_unit_ids: relationship.text_unit_ids,
-        id: relationship.id,
-        human_readable_id: relationship.human_readable_id,
-        combined_degree: relationship.combined_degree,        
-      }))
+      .map((relationship) => {
+        const src = relationship.source;
+        const tgt = relationship.target;
+        const resolvedSource = nodesMap[src] ? src : nodesMap[src.toUpperCase()] ? src.toUpperCase() : src;
+        const resolvedTarget = nodesMap[tgt] ? tgt : nodesMap[tgt.toUpperCase()] ? tgt.toUpperCase() : tgt;
+        return {
+          source: resolvedSource,
+          target: resolvedTarget,
+          type: relationship.type,
+          weight: relationship.weight,
+          description: relationship.description,
+          text_unit_ids: relationship.text_unit_ids,
+          id: relationship.id,
+          human_readable_id: relationship.human_readable_id,
+          combined_degree: relationship.combined_degree,
+        };
+      })
       .filter((link) => nodesMap[link.source] && nodesMap[link.target]);
 
     
