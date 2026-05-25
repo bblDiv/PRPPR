@@ -49,7 +49,7 @@ const SearchDrawer: React.FC<SearchDrawerProps> = ({
       open={rightDrawerOpen}
       onClose={toggleDrawer(false)}
       sx={{ zIndex: 1500 }}
-      PaperProps={{ sx: { bgcolor: "#141416", backgroundImage: "none" } }}
+      PaperProps={{ sx: { bgcolor: "#1d251a", backgroundImage: "none" } }}
     >
       <Box sx={{ width: 700, padding: 2 }}>
         <TextField
@@ -79,7 +79,7 @@ const SearchDrawer: React.FC<SearchDrawerProps> = ({
             <Typography variant="h6">Nodes</Typography>
             <TableContainer
               component={Paper}
-              sx={{ marginTop: 2, maxHeight: "400px", overflow: "auto", bgcolor: "#1a1a1e", backgroundImage: "none" }}
+              sx={{ marginTop: 2, maxHeight: "400px", overflow: "auto", bgcolor: "#263022", backgroundImage: "none" }}
             >
               <Table>
                 <TableHead>
@@ -129,7 +129,7 @@ const SearchDrawer: React.FC<SearchDrawerProps> = ({
             <Typography variant="h6">Relationships</Typography>
             <TableContainer
               component={Paper}
-              sx={{ marginTop: 2, maxHeight: "400px", overflow: "auto", bgcolor: "#1a1a1e", backgroundImage: "none" }}
+              sx={{ marginTop: 2, maxHeight: "400px", overflow: "auto", bgcolor: "#263022", backgroundImage: "none" }}
             >
               <Table>
                 <TableHead>

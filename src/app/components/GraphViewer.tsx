@@ -488,7 +488,7 @@ const GraphViewer: React.FC<GraphViewerProps> = ({
   };
 
   const getBackgroundColor = () =>
-    theme.palette.mode === "dark" ? "#000000" : "#FFFFFF";
+    theme.palette.mode === "dark" ? "rgba(0, 0, 0, 0)" : "#FFFFFF";
 
   const getLinkColor = (link: CustomLink) =>
     theme.palette.mode === "dark" ? "gray" : "lightgray";

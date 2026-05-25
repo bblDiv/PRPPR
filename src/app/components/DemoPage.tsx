@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
-  Button,
   Tabs,
   Tab,
   Chip,
@@ -18,6 +17,7 @@ import useFileHandler from "../hooks/useFileHandler";
 import useGraphData from "../hooks/useGraphData";
 import GraphViewer from "./GraphViewer";
 import DataTable from "./DataTable";
+import StarryBackground from "./StarryBackground";
 import { entityColumns } from "../models/entity";
 import { relationshipColumns } from "../models/relationship";
 import { documentColumns } from "../models/document";
@@ -101,131 +101,180 @@ const DemoPage: React.FC = () => {
   const currentTableConfig = dataTableConfigs[dataTab];
 
   return (
-    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column", bgcolor: "#09090b" }}>
+    <Box
+      sx={{
+        position: "relative",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        bgcolor: "#0d120a",
+        overflow: "hidden",
+      }}
+    >
+      {/* Space Starry Background */}
+      <StarryBackground />
+
       {/* Top Bar */}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          px: 2,
-          py: 1,
+          px: 3,
+          py: 1.5,
           borderBottom: "1px solid",
-          borderColor: alpha("#ffffff", 0.06),
-          bgcolor: "#09090b",
+          borderColor: alpha("#38bdf8", 0.15),
+          bgcolor: alpha("#0d120a", 0.5),
+          backdropFilter: "blur(12px)",
           flexShrink: 0,
+          zIndex: 10,
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <IconButton
             onClick={() => navigate("/")}
-            sx={{ color: "#a1a1aa", "&:hover": { color: "#fafafa" } }}
+            sx={{
+              color: "#a1a1aa",
+              border: `1px solid ${alpha("#38bdf8", 0.1)}`,
+              borderRadius: "8px",
+              bgcolor: alpha("#ffffff", 0.02),
+              transition: "all 0.2s",
+              "&:hover": {
+                color: "#38bdf8",
+                borderColor: "#38bdf8",
+                bgcolor: alpha("#38bdf8", 0.05),
+              },
+            }}
           >
-            <ArrowBackIcon />
+            <ArrowBackIcon sx={{ fontSize: 18 }} />
           </IconButton>
-          <Typography sx={{ fontSize: "0.9rem", fontWeight: 600, color: "#fafafa" }}>
+          <Typography sx={{ fontSize: "1rem", fontWeight: 700, color: "#fafafa", letterSpacing: "0.02em" }}>
             Vinculum Demo
           </Typography>
           <Chip
             label="SAMPLE DATA"
             size="small"
             sx={{
-              bgcolor: alpha("#f59e0b", 0.12),
-              color: "#fbbf24",
-              border: `1px solid ${alpha("#f59e0b", 0.25)}`,
+              bgcolor: alpha("#38bdf8", 0.08),
+              color: "#38bdf8",
+              border: `1px solid ${alpha("#38bdf8", 0.2)}`,
               fontWeight: 700,
-              fontSize: "0.65rem",
-              letterSpacing: "0.08em",
-              height: 22,
+              fontSize: "0.62rem",
+              letterSpacing: "0.1em",
+              height: 20,
             }}
           />
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
           <Chip
             label={`${graphData.nodes.length} nodes`}
             size="small"
             sx={{
-              bgcolor: alpha("#ffffff", 0.06),
+              bgcolor: alpha("#38bdf8", 0.05),
               color: "#a1a1aa",
-              fontSize: "0.7rem",
-              height: 24,
+              border: `1px solid ${alpha("#38bdf8", 0.1)}`,
+              fontSize: "0.68rem",
+              fontWeight: 600,
+              height: 22,
             }}
           />
           <Chip
             label={`${graphData.links.length} edges`}
             size="small"
             sx={{
-              bgcolor: alpha("#ffffff", 0.06),
+              bgcolor: alpha("#38bdf8", 0.05),
               color: "#a1a1aa",
-              fontSize: "0.7rem",
-              height: 24,
+              border: `1px solid ${alpha("#38bdf8", 0.1)}`,
+              fontSize: "0.68rem",
+              fontWeight: 600,
+              height: 22,
             }}
           />
         </Box>
       </Box>
 
       {/* Main Content */}
-      <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      <Box sx={{ display: "flex", flex: 1, overflow: "hidden", zIndex: 5 }}>
         {/* Left Panel */}
         <Box
           sx={{
-            width: { xs: "100%", md: 320 },
+            width: { xs: "100%", md: 340 },
             display: { xs: leftTab === 0 || leftTab === 1 ? "flex" : "none", md: "flex" },
             flexDirection: "column",
             borderRight: "1px solid",
-            borderColor: alpha("#ffffff", 0.06),
-            bgcolor: "#0c0c0e",
+            borderColor: alpha("#38bdf8", 0.15),
+            bgcolor: alpha("#131a11", 0.72),
+            backdropFilter: "blur(16px)",
+            boxShadow: `10px 0 30px ${alpha("#000000", 0.3)}`,
           }}
         >
           <Tabs
             value={leftTab}
             onChange={(_, v) => setLeftTab(v)}
             sx={{
-              minHeight: 40,
+              minHeight: 48,
               borderBottom: "1px solid",
-              borderColor: alpha("#ffffff", 0.06),
+              borderColor: alpha("#38bdf8", 0.12),
               "& .MuiTab-root": {
-                minHeight: 40,
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                color: "#71717a",
+                minHeight: 48,
+                fontSize: "0.78rem",
+                fontWeight: 700,
+                color: alpha("#38bdf8", 0.45),
                 textTransform: "none",
-                "&.Mui-selected": { color: "#fafafa" },
+                letterSpacing: "0.03em",
+                transition: "all 0.2s",
+                "&.Mui-selected": {
+                  color: "#38bdf8",
+                  bgcolor: alpha("#38bdf8", 0.03),
+                },
+                "&:hover": {
+                  color: "#38bdf8",
+                },
               },
-              "& .MuiTabs-indicator": { bgcolor: "#fafafa" },
+              "& .MuiTabs-indicator": {
+                bgcolor: "#38bdf8",
+                boxShadow: "0 0 10px #38bdf8",
+                height: 3,
+              },
             }}
           >
             <Tab
-              icon={<CloudUploadIcon sx={{ fontSize: 16 }} />}
+              icon={<CloudUploadIcon sx={{ fontSize: 18 }} />}
               iconPosition="start"
-              label="Ingest"
+              label="Ingest Space"
             />
             <Tab
-              icon={<TableChartIcon sx={{ fontSize: 16 }} />}
+              icon={<TableChartIcon sx={{ fontSize: 18 }} />}
               iconPosition="start"
-              label="Data"
+              label="Artifact Table"
             />
           </Tabs>
 
           {leftTab === 0 && (
-            <Box sx={{ p: 2, flex: 1, overflow: "auto" }}>
+            <Box sx={{ p: 2.5, flex: 1, overflow: "auto", display: "flex", flexDirection: "column", gap: 3.5 }}>
               {/* Drop Zone */}
               <Box
                 {...getRootProps()}
                 sx={{
                   border: "2px dashed",
-                  borderColor: isDragActive ? "#fafafa" : alpha("#ffffff", 0.1),
-                  borderRadius: "10px",
-                  p: 3,
+                  borderColor: isDragActive ? "#38bdf8" : alpha("#38bdf8", 0.3),
+                  borderRadius: "12px",
+                  p: 3.5,
                   textAlign: "center",
                   cursor: "pointer",
-                  bgcolor: isDragActive ? alpha("#ffffff", 0.04) : alpha("#ffffff", 0.02),
-                  transition: "all 0.2s",
+                  bgcolor: isDragActive ? alpha("#38bdf8", 0.08) : alpha("#131a11", 0.4),
+                  boxShadow: isDragActive ? `0 0 20px ${alpha("#38bdf8", 0.25)}` : "none",
+                  transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
                   "&:hover": {
-                    borderColor: alpha("#ffffff", 0.25),
-                    bgcolor: alpha("#ffffff", 0.03),
+                    borderColor: "#38bdf8",
+                    bgcolor: alpha("#38bdf8", 0.05),
+                    boxShadow: `0 0 15px ${alpha("#38bdf8", 0.15)}`,
+                    transform: "translateY(-1px)",
+                    "& .upload-icon": {
+                      color: "#38bdf8",
+                      transform: "scale(1.15) translateY(-3px)",
+                    },
                   },
-                  mb: 3,
                 }}
               >
                 <input
@@ -233,127 +282,159 @@ const DemoPage: React.FC = () => {
                   {...({ webkitdirectory: "true" } as any)}
                 />
                 <CloudUploadIcon
-                  sx={{ fontSize: 36, color: "#71717a", mb: 1 }}
+                  className="upload-icon"
+                  sx={{
+                    fontSize: 42,
+                    color: isDragActive ? "#38bdf8" : alpha("#38bdf8", 0.5),
+                    mb: 1.5,
+                    transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                  }}
                 />
-                <Typography sx={{ fontSize: "0.8rem", color: "#a1a1aa", mb: 0.5 }}>
+                <Typography sx={{ fontSize: "0.82rem", fontWeight: 600, color: "#fafafa", mb: 0.5 }}>
                   {isDragActive
-                    ? "Drop files here..."
-                    : "Drop GraphRAG artifacts or click to upload"}
+                    ? "Release to upload..."
+                    : "Drop GraphRAG directory or click"}
                 </Typography>
-                <Typography sx={{ fontSize: "0.7rem", color: "#52525b" }}>
-                  Supports .parquet files
+                <Typography sx={{ fontSize: "0.7rem", color: alpha("#38bdf8", 0.6) }}>
+                  Supports parquet tables
                 </Typography>
               </Box>
 
               {/* Graph Layers */}
-              <Typography
-                sx={{
-                  fontSize: "0.7rem",
-                  fontWeight: 600,
-                  color: "#71717a",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  mb: 1.5,
-                }}
-              >
-                Graph Layers
-              </Typography>
-              {[
-                {
-                  label: "Documents",
-                  checked: includeDocuments,
-                  onChange: () => setIncludeDocuments(!includeDocuments),
-                  disabled: !hasDocuments,
-                  count: documents.length,
-                },
-                {
-                  label: "Text Units",
-                  checked: includeTextUnits,
-                  onChange: () => setIncludeTextUnits(!includeTextUnits),
-                  disabled: !hasTextUnits,
-                  count: textunits.length,
-                },
-                {
-                  label: "Communities",
-                  checked: includeCommunities,
-                  onChange: () => setIncludeCommunities(!includeCommunities),
-                  disabled: !hasCommunities,
-                  count: communities.length,
-                },
-                {
-                  label: "Covariates",
-                  checked: includeCovariates,
-                  onChange: () => setIncludeCovariates(!includeCovariates),
-                  disabled: !hasCovariates,
-                  count: covariates.length,
-                },
-              ].map((layer) => (
-                <Box
-                  key={layer.label}
-                  onClick={layer.disabled ? undefined : layer.onChange}
+              <Box>
+                <Typography
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    px: 1.5,
-                    py: 0.8,
-                    mb: 0.5,
-                    borderRadius: "8px",
-                    cursor: layer.disabled ? "default" : "pointer",
-                    opacity: layer.disabled ? 0.4 : 1,
-                    bgcolor: layer.checked ? alpha("#ffffff", 0.06) : "transparent",
-                    border: "1px solid",
-                    borderColor: layer.checked ? alpha("#ffffff", 0.1) : "transparent",
-                    transition: "all 0.15s",
-                    "&:hover": layer.disabled
-                      ? {}
-                      : { bgcolor: alpha("#ffffff", 0.04) },
+                    fontSize: "0.68rem",
+                    fontWeight: 800,
+                    color: alpha("#38bdf8", 0.7),
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                    mb: 2,
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  Graph Explorer Layers
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  {[
+                    {
+                      label: "Documents",
+                      checked: includeDocuments,
+                      onChange: () => setIncludeDocuments(!includeDocuments),
+                      disabled: !hasDocuments,
+                      count: documents.length,
+                    },
+                    {
+                      label: "Text Units",
+                      checked: includeTextUnits,
+                      onChange: () => setIncludeTextUnits(!includeTextUnits),
+                      disabled: !hasTextUnits,
+                      count: textunits.length,
+                    },
+                    {
+                      label: "Communities",
+                      checked: includeCommunities,
+                      onChange: () => setIncludeCommunities(!includeCommunities),
+                      disabled: !hasCommunities,
+                      count: communities.length,
+                    },
+                    {
+                      label: "Covariates",
+                      checked: includeCovariates,
+                      onChange: () => setIncludeCovariates(!includeCovariates),
+                      disabled: !hasCovariates,
+                      count: covariates.length,
+                    },
+                  ].map((layer) => (
                     <Box
+                      key={layer.label}
+                      onClick={layer.disabled ? undefined : layer.onChange}
                       sx={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        bgcolor: layer.checked ? "#fafafa" : "#3f3f46",
-                        transition: "all 0.15s",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        px: 2,
+                        py: 1.2,
+                        borderRadius: "10px",
+                        cursor: layer.disabled ? "default" : "pointer",
+                        opacity: layer.disabled ? 0.35 : 1,
+                        bgcolor: layer.checked ? alpha("#38bdf8", 0.08) : alpha("#ffffff", 0.01),
+                        border: "1px solid",
+                        borderColor: layer.checked ? alpha("#38bdf8", 0.3) : alpha("#ffffff", 0.04),
+                        transition: "all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                        "&:hover": layer.disabled
+                          ? {}
+                          : {
+                              bgcolor: alpha("#38bdf8", 0.04),
+                              borderColor: alpha("#38bdf8", 0.25),
+                              transform: "translateX(4px)",
+                            },
                       }}
-                    />
-                    <Typography sx={{ fontSize: "0.8rem", color: "#d4d4d8" }}>
-                      {layer.label}
-                    </Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: "0.7rem", color: "#71717a" }}>
-                    {layer.count}
-                  </Typography>
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <Box
+                          sx={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            bgcolor: layer.checked ? "#38bdf8" : alpha("#ffffff", 0.2),
+                            boxShadow: layer.checked ? "0 0 8px #38bdf8" : "none",
+                            transition: "all 0.2s",
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            fontSize: "0.82rem",
+                            fontWeight: layer.checked ? 600 : 500,
+                            color: layer.checked ? "#fafafa" : "#a1a1aa",
+                            transition: "all 0.2s",
+                          }}
+                        >
+                          {layer.label}
+                        </Typography>
+                      </Box>
+                      <Chip
+                        label={layer.count}
+                        size="small"
+                        sx={{
+                          height: 18,
+                          fontSize: "0.65rem",
+                          fontWeight: 700,
+                          bgcolor: layer.checked ? alpha("#38bdf8", 0.15) : alpha("#ffffff", 0.03),
+                          color: layer.checked ? "#38bdf8" : "#71717a",
+                          border: `1px solid ${layer.checked ? alpha("#38bdf8", 0.25) : "transparent"}`,
+                          borderRadius: "4px",
+                        }}
+                      />
+                    </Box>
+                  ))}
                 </Box>
-              ))}
+              </Box>
 
               {/* Stats */}
               <Box
                 sx={{
-                  mt: 3,
-                  p: 2,
-                  borderRadius: "10px",
-                  bgcolor: alpha("#ffffff", 0.02),
+                  mt: "auto",
+                  p: 2.2,
+                  borderRadius: "12px",
+                  bgcolor: alpha("#131a11", 0.45),
                   border: "1px solid",
-                  borderColor: alpha("#ffffff", 0.06),
+                  borderColor: alpha("#38bdf8", 0.15),
+                  boxShadow: `inset 0 0 10px ${alpha("#000000", 0.25)}`,
                 }}
               >
                 <Typography
                   sx={{
-                    fontSize: "0.7rem",
-                    fontWeight: 600,
-                    color: "#71717a",
+                    fontSize: "0.68rem",
+                    fontWeight: 800,
+                    color: alpha("#38bdf8", 0.7),
                     textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    mb: 1,
+                    letterSpacing: "0.15em",
+                    mb: 2,
                   }}
                 >
-                  Loaded Artifacts
+                  Cosmic Stats Dashboard
                 </Typography>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
                   {[
                     { label: "Entities", count: entities.length },
                     { label: "Relations", count: relationships.length },
@@ -364,11 +445,17 @@ const DemoPage: React.FC = () => {
                   ].map((stat) => (
                     <Box key={stat.label}>
                       <Typography
-                        sx={{ fontSize: "1.1rem", fontWeight: 700, color: "#fafafa" }}
+                        sx={{
+                          fontSize: "1.15rem",
+                          fontWeight: 800,
+                          color: "#38bdf8",
+                          letterSpacing: "-0.01em",
+                          textShadow: `0 0 8px ${alpha("#38bdf8", 0.4)}`,
+                        }}
                       >
                         {stat.count}
                       </Typography>
-                      <Typography sx={{ fontSize: "0.65rem", color: "#71717a" }}>
+                      <Typography sx={{ fontSize: "0.65rem", color: "#a1a1aa", fontWeight: 500 }}>
                         {stat.label}
                       </Typography>
                     </Box>
@@ -386,27 +473,33 @@ const DemoPage: React.FC = () => {
                 variant="scrollable"
                 scrollButtons="auto"
                 sx={{
-                  minHeight: 32,
+                  minHeight: 36,
                   borderBottom: "1px solid",
-                  borderColor: alpha("#ffffff", 0.06),
+                  borderColor: alpha("#38bdf8", 0.12),
                   "& .MuiTab-root": {
-                    minHeight: 32,
-                    fontSize: "0.65rem",
-                    fontWeight: 600,
-                    color: "#71717a",
+                    minHeight: 36,
+                    fontSize: "0.68rem",
+                    fontWeight: 700,
+                    color: alpha("#38bdf8", 0.45),
                     textTransform: "none",
                     minWidth: "auto",
-                    px: 1.5,
-                    "&.Mui-selected": { color: "#d4d4d8" },
+                    px: 2,
+                    "&.Mui-selected": {
+                      color: "#38bdf8",
+                      bgcolor: alpha("#38bdf8", 0.04),
+                    },
                   },
-                  "& .MuiTabs-indicator": { bgcolor: "#fafafa", height: 2 },
+                  "& .MuiTabs-indicator": {
+                    bgcolor: "#38bdf8",
+                    height: 2,
+                  },
                 }}
               >
                 {dataTableConfigs.map((cfg) => (
                   <Tab key={cfg.label} label={cfg.label} />
                 ))}
               </Tabs>
-              <Box sx={{ flex: 1, overflow: "auto", p: 0.5 }}>
+              <Box sx={{ flex: 1, overflow: "auto", p: 1.5 }}>
                 <DataTable
                   columns={currentTableConfig.columns as any}
                   data={currentTableConfig.data as any}
@@ -422,7 +515,7 @@ const DemoPage: React.FC = () => {
             flex: 1,
             position: "relative",
             overflow: "hidden",
-            bgcolor: "#000000",
+            bgcolor: "transparent",
           }}
         >
           <GraphViewer

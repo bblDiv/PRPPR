@@ -98,7 +98,7 @@ const APISearchDrawer: React.FC<APISearchDrawerProps> = ({
       open={apiDrawerOpen}
       onClose={toggleDrawer(false)}
       sx={{ zIndex: 1500 }}
-      PaperProps={{ sx: { bgcolor: "#141416", backgroundImage: "none" } }}
+      PaperProps={{ sx: { bgcolor: "#1d251a", backgroundImage: "none" } }}
     >
       <Box
         sx={{ width: "60vw", padding: 2, paddingTop: 6, position: "relative" }}

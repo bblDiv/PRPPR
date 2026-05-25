@@ -64,6 +64,10 @@ const useFileHandler = () => {
   };
 
   const loadFiles = async (files: File[] | string[]) => {
+    if (!Array.isArray(files)) {
+      throw new TypeError("loadFiles: argument 'files' must be an array");
+    }
+
     const entitiesArray: Entity[][] = [];
     const relationshipsArray: Relationship[][] = [];
     const documentsArray: Document[][] = [];
@@ -72,9 +76,30 @@ const useFileHandler = () => {
     const communityReportsArray: CommunityReport[][] = [];
     const covariatesArray: Covariate[][] = [];
 
+    // Max file size: 50MB (50 * 1024 * 1024 bytes)
+    const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
     for (const file of files) {
+      if (typeof file !== "string" && !((file as any) instanceof File) && !((file as any) instanceof Blob)) {
+        console.error("loadFiles: invalid element type. Skipping file:", file);
+        continue;
+      }
+
       const fileName =
         typeof file === "string" ? file.split("/").pop()! : file.name;      
+      
+      // Type Check: Verify .parquet extension
+      if (!fileName.toLowerCase().endsWith(".parquet")) {
+        console.warn(`loadFiles: Skipping non-parquet file: ${fileName}`);
+        continue;
+      }
+
+      // Rate Limit / Size Check: Enforce maximum file size
+      if (typeof file !== "string" && file.size > MAX_FILE_SIZE) {
+        console.error(`loadFiles: File ${fileName} exceeds 50MB limit (${(file.size / 1024 / 1024).toFixed(2)}MB). Skipping to prevent tab freeze.`);
+        continue;
+      }
+
       const schema = inferSchema(fileName);
 
       let data;

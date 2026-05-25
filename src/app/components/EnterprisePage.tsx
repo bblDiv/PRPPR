@@ -4,7 +4,15 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import HubIcon from "@mui/icons-material/Hub";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import AppleIcon from "@mui/icons-material/Apple";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
+const XIcon = (props: any) => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
 
 const MotionBox = motion(Box);
 
@@ -79,7 +87,7 @@ const EnterprisePage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#09090b", color: "#fafafa" }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "transparent", color: "#f0fdf4" }}>
       {/* Header */}
       <Box
         component="header"
@@ -89,9 +97,9 @@ const EnterprisePage: React.FC = () => {
           zIndex: 50,
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
-          bgcolor: alpha("#09090b", 0.8),
+          bgcolor: alpha("#212a1e", 0.75),
           borderBottom: "1px solid",
-          borderColor: alpha("#ffffff", 0.06),
+          borderColor: alpha("#38bdf8", 0.08),
         }}
       >
         <Box
@@ -159,7 +167,7 @@ const EnterprisePage: React.FC = () => {
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <IconButton
-              href="https://github.com/bblDiv/PRPPR"
+              href="https://github.com/bblDiv/vinculum"
               target="_blank"
               rel="noopener"
               sx={{ color: "#a1a1aa", "&:hover": { color: "#fafafa" } }}
@@ -448,10 +456,13 @@ const EnterprisePage: React.FC = () => {
 
       {/* Footer */}
       <Box
+        component="footer"
         sx={{
           borderTop: "1px solid",
-          borderColor: alpha("#ffffff", 0.06),
-          py: 4,
+          borderColor: alpha("#38bdf8", 0.08),
+          bgcolor: alpha("#1d251a", 0.35),
+          py: 8,
+          mt: "auto",
         }}
       >
         <Box
@@ -460,25 +471,180 @@ const EnterprisePage: React.FC = () => {
             mx: "auto",
             px: { xs: 2, md: 4 },
             display: "flex",
-            alignItems: "center",
+            flexDirection: { xs: "column", md: "row" },
             justifyContent: "space-between",
+            gap: 6,
           }}
         >
-          <Typography
-            sx={{ fontSize: "0.8rem", color: "#52525b", cursor: "pointer" }}
-            onClick={() => navigate("/")}
-          >
-            Vinculum
+          {/* Left Column: Brand & Download */}
+          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <Box
+                sx={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "8px",
+                  bgcolor: "#fafafa",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <HubIcon sx={{ fontSize: 20, color: "#09090b" }} />
+              </Box>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 700, fontSize: "1.1rem", color: "#fafafa" }}
+              >
+                Vinculum
+              </Typography>
+            </Box>
+            <Typography sx={{ fontSize: "0.85rem", color: "#a1a1aa", maxWidth: 360, lineHeight: 1.6 }}>
+              The next-generation GraphRAG knowledge visualization engine. Connect Slack, Jira, and Notion into a unified, interactive team brain.
+            </Typography>
+            
+            {/* Get Vinculum Section */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+              <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#38bdf8", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                Get Vinculum
+              </Typography>
+              <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<AppleIcon />}
+                  href="https://github.com/bblDiv/vinculum/releases"
+                  target="_blank"
+                  sx={{
+                    borderColor: "rgba(56, 189, 248, 0.2)",
+                    color: "#fafafa",
+                    fontSize: "0.75rem",
+                    "&:hover": {
+                      borderColor: "#38bdf8",
+                      bgcolor: "rgba(56, 189, 248, 0.04)",
+                    },
+                  }}
+                >
+                  Download App (macOS & Windows)
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => navigate("/demo")}
+                  sx={{
+                    bgcolor: "#fafafa",
+                    color: "#09090b",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    "&:hover": { bgcolor: "#e4e4e7" },
+                  }}
+                >
+                  Launch Web Demo
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Right Column: Connect & Links */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 260 }}>
+            {/* Social Icons */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+              <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#38bdf8", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                Connect with the Author
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1.5 }}>
+                <IconButton
+                  href="https://www.linkedin.com/in/divye-rawat-463064375/"
+                  target="_blank"
+                  rel="noopener"
+                  sx={{ 
+                    color: "#a1a1aa", 
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    bgcolor: "rgba(255,255,255,0.01)",
+                    "&:hover": { 
+                      color: "#38bdf8",
+                      borderColor: "rgba(56, 189, 248, 0.3)",
+                      bgcolor: "rgba(56, 189, 248, 0.04)"
+                    } 
+                  }}
+                >
+                  <LinkedInIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+                <IconButton
+                  href="https://github.com/bblDiv"
+                  target="_blank"
+                  rel="noopener"
+                  sx={{ 
+                    color: "#a1a1aa", 
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    bgcolor: "rgba(255,255,255,0.01)",
+                    "&:hover": { 
+                      color: "#38bdf8",
+                      borderColor: "rgba(56, 189, 248, 0.3)",
+                      bgcolor: "rgba(56, 189, 248, 0.04)"
+                    } 
+                  }}
+                >
+                  <GitHubIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+                <IconButton
+                  href="https://x.com/Daktardtm"
+                  target="_blank"
+                  rel="noopener"
+                  sx={{ 
+                    color: "#a1a1aa", 
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    bgcolor: "rgba(255,255,255,0.01)",
+                    "&:hover": { 
+                      color: "#38bdf8",
+                      borderColor: "rgba(56, 189, 248, 0.3)",
+                      bgcolor: "rgba(56, 189, 248, 0.04)"
+                    } 
+                  }}
+                >
+                  <XIcon style={{ fontSize: 18 }} />
+                </IconButton>
+              </Box>
+            </Box>
+
+            {/* Quick Links */}
+            <Box sx={{ display: "flex", gap: 4 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#a1a1aa", textTransform: "uppercase", mb: 0.5 }}>
+                  Navigation
+                </Typography>
+                <Typography onClick={() => navigate("/")} sx={{ fontSize: "0.8rem", color: "#71717a", cursor: "pointer", "&:hover": { color: "#fafafa" } }}>
+                  Home
+                </Typography>
+                <Typography onClick={() => navigate("/enterprise")} sx={{ fontSize: "0.8rem", color: "#71717a", cursor: "pointer", "&:hover": { color: "#fafafa" } }}>
+                  Enterprise
+                </Typography>
+                <Typography onClick={() => navigate("/demo")} sx={{ fontSize: "0.8rem", color: "#71717a", cursor: "pointer", "&:hover": { color: "#fafafa" } }}>
+                  Live Demo
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Bottom copyright line */}
+        <Box
+          sx={{
+            maxWidth: 1100,
+            mx: "auto",
+            px: { xs: 2, md: 4 },
+            mt: 6,
+            pt: 3,
+            borderTop: "1px solid",
+            borderColor: alpha("#ffffff", 0.04),
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          <Typography sx={{ fontSize: "0.75rem", color: "#52525b" }}>
+            &copy; {new Date().getFullYear()} Vinculum. Built by bblDiv.
           </Typography>
-          <IconButton
-            href="https://github.com/bblDiv/PRPPR"
-            target="_blank"
-            rel="noopener"
-            sx={{ color: "#52525b", "&:hover": { color: "#a1a1aa" } }}
-            size="small"
-          >
-            <GitHubIcon sx={{ fontSize: 16 }} />
-          </IconButton>
         </Box>
       </Box>
     </Box>

@@ -41,6 +41,12 @@ export const readParquetFile = async (
   file: File | Blob,
   schema?: string
 ): Promise<any[]> => {
+  if (!(file instanceof File) && !(file instanceof Blob)) {
+    throw new TypeError("readParquetFile: argument 'file' must be an instance of File or Blob");
+  }
+  if (schema !== undefined && typeof schema !== "string") {
+    throw new TypeError("readParquetFile: argument 'schema' must be a string");
+  }
   try {
     const arrayBuffer = await file.arrayBuffer();
     const asyncBuffer = new AsyncBuffer(arrayBuffer);
