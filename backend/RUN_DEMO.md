@@ -1,4 +1,4 @@
-# 🚀 Run NexusGraph Backend Demo (No API Keys Required!)
+# 🚀 Run Vinculum Backend Demo (No API Keys Required!)
 
 This demo version works **without any API keys** so you can see the backend running immediately.
 

@@ -1,5 +1,5 @@
 """
-FastAPI application entry point for NexusGraph backend.
+FastAPI application entry point for Vinculum backend.
 """
 
 from contextlib import asynccontextmanager
@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     Lifespan context manager for startup and shutdown events.
     """
     # Startup
-    logger.info("Starting NexusGraph backend...")
+    logger.info("Starting Vinculum backend...")
     logger.info(f"Version: {__version__}")
     logger.info(f"Neo4j URI: {settings.neo4j_uri}")
     logger.info(f"Qdrant URL: {settings.qdrant_url}")
@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("Shutting down NexusGraph backend...")
+    logger.info("Shutting down Vinculum backend...")
     # TODO: Close database connections
     # await neo4j_client.close()
     # await qdrant_client.close()
@@ -46,7 +46,7 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI application
 app = FastAPI(
-    title="NexusGraph API",
+    title="Vinculum API",
     description="GraphRAG pipeline for organizational knowledge management",
     version=__version__,
     lifespan=lifespan,
@@ -80,7 +80,7 @@ app.include_router(
 async def root():
     """Root endpoint."""
     return {
-        "name": "NexusGraph API",
+        "name": "Vinculum API",
         "version": __version__,
         "status": "operational",
         "docs": "/docs"

@@ -1,5 +1,5 @@
 """
-Core business logic for NexusGraph.
+Core business logic for Vinculum.
 """
 
 from .chunking import chunk_text

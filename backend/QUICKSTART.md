@@ -1,6 +1,6 @@
-# NexusGraph Backend - Quick Start Guide
+# Vinculum Backend - Quick Start Guide
 
-This guide will help you view and test the NexusGraph backend implementation.
+This guide will help you view and test the Vinculum backend implementation.
 
 ## 📋 Prerequisites
 
@@ -215,10 +215,10 @@ curl -X POST http://localhost:8000/api/v1/query \
 docker ps
 
 # View Neo4j logs
-docker logs nexusgraph-neo4j
+docker logs vinculum-neo4j
 
 # View Qdrant logs
-docker logs nexusgraph-qdrant
+docker logs vinculum-qdrant
 ```
 
 ## 🎨 Step 6: View with Frontend (Optional)
@@ -288,7 +288,7 @@ docker-compose up -d
 - Review `backend/IMPLEMENTATION_GUIDE.md` for implementation steps
 - Check `PROJECT_SUMMARY.md` for architecture overview
 - Review error logs in terminal
-- Check Docker logs: `docker logs nexusgraph-neo4j`
+- Check Docker logs: `docker logs vinculum-neo4j`
 
 ## 📝 What's Working Now
 

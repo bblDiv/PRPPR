@@ -1,5 +1,5 @@
 """
-Configuration management for NexusGraph backend.
+Configuration management for Vinculum backend.
 Loads environment variables and provides typed configuration objects.
 """
 
@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # Qdrant Configuration
     qdrant_host: str = "localhost"
     qdrant_port: int = 6333
-    qdrant_collection: str = "nexusgraph_entities"
+    qdrant_collection: str = "vinculum_entities"
     qdrant_api_key: str = ""
 
     # LLM Configuration - Made optional for demo mode

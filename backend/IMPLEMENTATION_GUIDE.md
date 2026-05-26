@@ -1,6 +1,6 @@
-# NexusGraph Implementation Guide
+# Vinculum Implementation Guide
 
-This guide provides step-by-step instructions for completing the NexusGraph backend implementation based on the PRD specifications.
+This guide provides step-by-step instructions for completing the Vinculum backend implementation based on the PRD specifications.
 
 ## Current Status
 
@@ -215,7 +215,7 @@ async def hybrid_search(query: str) -> Tuple[str, List[Dict], Dict]:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Starting NexusGraph backend...")
+    logger.info("Starting Vinculum backend...")
     await neo4j_client.connect()
     await qdrant_client.connect()
     

@@ -1,8 +1,8 @@
-# NexusGraph Backend - GraphRAG Pipeline Architecture
+# Vinculum Backend - GraphRAG Pipeline Architecture
 
 ## Overview
 
-NexusGraph transforms fragmented corporate communication platforms (Slack, Jira, Notion) into an interconnected, actionable organizational memory using a hybrid GraphRAG architecture.
+Vinculum transforms fragmented corporate communication platforms (Slack, Jira, Notion) into an interconnected, actionable organizational memory using a hybrid GraphRAG architecture.
 
 ## Architecture Components
 
@@ -161,7 +161,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - `MENTIONS`: Document → Concept/Person
 
 ### Qdrant Collections
-- Collection: `nexusgraph_entities`
+- Collection: `vinculum_entities`
 - Vector dimension: 1536
 - Distance metric: Cosine
 

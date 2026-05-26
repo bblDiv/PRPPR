@@ -1,5 +1,5 @@
 """
-Utility functions for NexusGraph backend.
+Utility functions for Vinculum backend.
 """
 
 from .embeddings import generate_embedding, generate_embeddings_batch

@@ -1,5 +1,5 @@
 """
-NexusGraph Backend - GraphRAG Pipeline Architecture
+Vinculum Backend - GraphRAG Pipeline Architecture
 """
 
 __version__ = "0.1.0"

@@ -1,10 +1,10 @@
-# NexusGraph
+# Vinculum
 
 A connected knowledge graph that unifies scattered company data from Slack, Jira, and Notion into a single, queryable 3D visualization.
 
 ## Overview
 
-NexusGraph automatically ingests data from your communication platforms and connects the pieces together. Conversations, tickets, and documents are linked into an interactive 3D star map, making company knowledge searchable and visual.
+Vinculum automatically ingests data from your communication platforms and connects the pieces together. Conversations, tickets, and documents are linked into an interactive 3D star map, making company knowledge searchable and visual.
 
 ## Features
 

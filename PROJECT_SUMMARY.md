@@ -1,8 +1,8 @@
-# NexusGraph - GraphRAG Pipeline Implementation Summary
+# Vinculum - GraphRAG Pipeline Implementation Summary
 
 ## Project Overview
 
-NexusGraph is a comprehensive GraphRAG (Graph Retrieval-Augmented Generation) backend system that transforms fragmented corporate communication platforms (Slack, Jira, Notion) into an interconnected, queryable organizational knowledge graph.
+Vinculum is a comprehensive GraphRAG (Graph Retrieval-Augmented Generation) backend system that transforms fragmented corporate communication platforms (Slack, Jira, Notion) into an interconnected, queryable organizational knowledge graph.
 
 ## Architecture
 

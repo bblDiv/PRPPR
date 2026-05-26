@@ -69,7 +69,7 @@ def generate_demo_response(query: str) -> QueryResponse:
                 GraphEdge(source="demo_person", target="demo_concept", type="DISCUSSED", weight=0.8),
                 GraphEdge(source="demo_doc", target="demo_concept", type="MENTIONS", weight=0.7),
             ],
-            "answer": "This is a demo response. The NexusGraph system analyzes your organizational knowledge graph to provide contextual answers with citations. Connect your databases and LLM to see real results.",
+            "answer": "This is a demo response. The Vinculum system analyzes your organizational knowledge graph to provide contextual answers with citations. Connect your databases and LLM to see real results.",
             "citations": [
                 Citation(
                     source="slack",
